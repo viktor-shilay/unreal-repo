@@ -1,0 +1,24 @@
+POST http://localhost:8083/connectors
+Content-Type: application/json
+
+{
+  "name": "unreal-connector",
+  "config": {
+    "connector.class": "io.debezium.connector.postgresql.PostgresConnector",
+    "tasks.max": "1",
+    "database.hostname": "unreal-postgres",
+    "database.port": "5432",
+    "database.user": "postgres",
+    "database.password": "root",
+    "database.dbname": "unreal_db",
+    "database.server.name": "unreal_db",
+    "table.include.list": "department.employees",
+    "topic.prefix": "unreal-topic",
+    "database.history.kafka.bootstrap.servers": "kafka:9092",
+    "database.history.kafka.topic": "schema_changes.employees",
+    "value.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "value.converter.schemas.enable": "false",
+    "key.converter": "org.apache.kafka.connect.json.JsonConverter",
+    "key.converter.schemas.enable": "false"
+  }
+}

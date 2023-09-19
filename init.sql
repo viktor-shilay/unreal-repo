@@ -3,10 +3,10 @@ CREATE TABLE IF NOT EXISTS department.employees
 (
 	id         BIGSERIAL PRIMARY KEY,
     username   VARCHAR(64) NOT NULL UNIQUE,
-    firstname  VARCHAR(64),
-    lastname   VARCHAR(64),
-    birth_date DATE,
-    role       VARCHAR(32)
+    firstname  VARCHAR(64) NOT NULL,
+    lastname   VARCHAR(64) NOT NULL,
+    birth_date DATE NOT NULL,
+    role       VARCHAR(32) NOT NULL
 );
 INSERT INTO department.employees VALUES 
 (1, 'v_shilay', 'Viktor', 'Shilay', '1996-01-22', 'UNEMPLOYED'),
