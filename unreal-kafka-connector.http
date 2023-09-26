@@ -19,6 +19,9 @@ Content-Type: application/json
     "value.converter": "org.apache.kafka.connect.json.JsonConverter",
     "value.converter.schemas.enable": "false",
     "key.converter": "org.apache.kafka.connect.json.JsonConverter",
-    "key.converter.schemas.enable": "false"
+    "key.converter.schemas.enable": "false",
+    "transforms": "unwrap",
+    "transforms.unwrap.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
+    "transforms.unwrap.field": "id"
   }
 }

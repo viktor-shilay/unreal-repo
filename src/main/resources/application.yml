@@ -1,0 +1,12 @@
+spring:
+  datasource:
+    url: ${DATASOURCE_URL}
+    username: postgres
+    password: root
+  jpa:
+    properties:
+      hibernate:
+        default_schema: department
+
+  kafka:
+    bootstrap-servers: ${KAFKA_PORT}
