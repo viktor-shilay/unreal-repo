@@ -20,8 +20,14 @@ Content-Type: application/json
     "value.converter.schemas.enable": "false",
     "key.converter": "org.apache.kafka.connect.json.JsonConverter",
     "key.converter.schemas.enable": "false",
-    "transforms": "unwrap",
+    "tombstones.on.delete": "false",
+    "transforms": "unwrap, moveOpToHeader",
     "transforms.unwrap.type": "org.apache.kafka.connect.transforms.ExtractField$Key",
-    "transforms.unwrap.field": "id"
+    "transforms.unwrap.field": "id",
+    "transforms.unwrap.add.headers": "op",
+    "transforms.moveOpToHeader.type": "org.apache.kafka.connect.transforms.HeaderFrom$Value",
+    "transforms.moveOpToHeader.fields": "op",
+    "transforms.moveOpToHeader.headers": "op",
+    "transforms.moveOpToHeader.operation": "move"
   }
 }

@@ -16,7 +16,18 @@ public class ConsumerService {
     private final EmployeeRepository employeeRepository;
 
     @KafkaListener(topics = "unreal-topic.department.employees", groupId = "consumerId")
-    public void logEmployeeByKafkaId(@Header(KafkaHeaders.RECEIVED_KEY) Long key) {
-        employeeRepository.findById(key).ifPresent(employee -> log.info(String.valueOf(employee)));
+    public void logEmployeeByKafkaId(@Header(KafkaHeaders.RECEIVED_KEY) Long key, @Header String op) {
+        if(op.equals("d")) {
+            log.info("Employee with id {} was deleted!", key);
+        } else {
+            employeeRepository.findById(key).ifPresent(employee -> {
+                if(op.equals("c")) {
+                    log.info("Employee with id {} was created! [{}]", key, employee);
+                }
+                if(op.equals("u")) {
+                    log.info("Employee with id {} was updated! [{}]", key, employee);
+                }
+            });
+        }
     }
 }
