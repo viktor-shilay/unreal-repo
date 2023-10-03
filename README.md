@@ -11,6 +11,5 @@ Make sure that you have [Docker](https://www.docker.com/) installed and running 
     ```
     $ docker-compose up -d
     ``` 
-2. Once all the containers are initialized, run http-request `unreal-kafka-connector.http` to configure Debezium connector.
 
-3. Open `unreal-repo-app` container logs to see all logged messages.
+2. Open `unreal-repo-app` container logs to see all logged messages.
