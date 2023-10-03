@@ -46,6 +46,11 @@ services:
     depends_on:
       - kafka-service
       - postgres-database
+    healthcheck:
+      test: [ "CMD", "curl", "-I", "http://kafka-connector:8083" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   kafdrop-service:
     container_name: kafdrop
@@ -66,3 +71,12 @@ services:
       KAFKA_PORT: kafka:9092
     depends_on:
       - postgres-database
+
+  terraform-service:
+    image: terraform-service:latest
+    container_name: terraform-service
+    build: ./terraform
+    depends_on:
+      kafka-connector-service:
+        condition: service_healthy
+
