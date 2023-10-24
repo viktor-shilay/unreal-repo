@@ -16,12 +16,12 @@ services:
       - ${KAFKA_PORT}:9092
     environment:
       ZOOKEEPER_CONNECT: zookeeper:2181
-      KAFKA_ADVERTISED_LISTENERS: LISTENER_INT://kafka:9092
-      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INT:PLAINTEXT
-      KAFKA_LISTENERS: LISTENER_INT://0.0.0.0:9092
+      KAFKA_LISTENERS: "LISTENER_INT://kafka:29092, LISTENER_EXT://0.0.0.0:9092"
+      KAFKA_ADVERTISED_LISTENERS: "LISTENER_INT://kafka:29092, LISTENER_EXT://host.docker.internal:9092"
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "LISTENER_INT:PLAINTEXT, LISTENER_EXT:PLAINTEXT"
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INT
 
-  postgres-service:
+  postgres-database:
     container_name: unreal-postgres
     image: quay.io/debezium/postgres:14
     ports:
@@ -38,14 +38,19 @@ services:
     ports:
       - ${KAFKA_CONNECTOR_PORT}:8083
     environment:
-      BOOTSTRAP_SERVERS: kafka:9092
+      BOOTSTRAP_SERVERS: kafka:29092
       GROUP_ID: 1
       CONFIG_STORAGE_TOPIC: my_connect_configs
       OFFSET_STORAGE_TOPIC: my_connect_offsets
       STATUS_STORAGE_TOPIC: my_connect_statuses
     depends_on:
       - kafka-service
-      - postgres-service
+      - postgres-database
+    healthcheck:
+      test: [ "CMD", "curl", "-I", "http://kafka-connector:8083" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
 
   kafdrop-service:
     container_name: kafdrop
@@ -55,4 +60,23 @@ services:
     ports:
       - ${KAFDROP_PORT}:9000
     environment:
-      KAFKA_BROKERCONNECT: kafka:9092
+      KAFKA_BROKERCONNECT: kafka:29092
+
+  unreal-repo-service:
+    image: unreal-repo-service:latest
+    container_name: unreal-repo-app
+    build: .
+    environment:
+      DATASOURCE_URL: jdbc:postgresql://unreal-postgres:5432/unreal_db
+      KAFKA_PORT: kafka:9092
+    depends_on:
+      - postgres-database
+
+  terraform-service:
+    image: terraform-service:latest
+    container_name: terraform-service
+    build: ./terraform
+    depends_on:
+      kafka-connector-service:
+        condition: service_healthy
+

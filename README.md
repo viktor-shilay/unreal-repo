@@ -2,6 +2,7 @@
 
 ## Features
 1. Send events into kafka when `employee` table changes.
+2. Logging kafka events into application console.
 
 ## How to run
 Make sure that you have [Docker](https://www.docker.com/) installed and running on your machine.
@@ -10,6 +11,5 @@ Make sure that you have [Docker](https://www.docker.com/) installed and running 
     ```
     $ docker-compose up -d
     ``` 
-2. Once all the containers are initialized, run http-request `unreal-kafka-connector.http` to configure Debezium connector.
 
-3. Go to `http://localhost:9000/` and you'll see topic `unreal-topic.department.employees` with all the messages.
+2. Open `unreal-repo-app` container logs to see all logged messages.
