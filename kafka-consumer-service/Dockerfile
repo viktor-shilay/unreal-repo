@@ -9,8 +9,7 @@ RUN gradle build -x test
 FROM openjdk:17-oracle
 ENV APP_HOME=/app/
 ENV TZ=Europe/Minsk
-ENV ARTIFACT_NAME=unreal-repo-1.0.0.jar
+ENV ARTIFACT_NAME=kafka-consumer-service-1.0.0.jar
 ARG JAR_FILE=$APP_HOME/build/libs/$ARTIFACT_NAME
-COPY --from=build $JAR_FILE /opt/unreal-repo-service/app.jar
-ENTRYPOINT ["java", "-jar", "/opt/unreal-repo-service/app.jar"]
-
+COPY --from=build $JAR_FILE /opt/kafka-consumer-service/app.jar
+ENTRYPOINT ["java", "-jar", "/opt/kafka-consumer-service/app.jar"]

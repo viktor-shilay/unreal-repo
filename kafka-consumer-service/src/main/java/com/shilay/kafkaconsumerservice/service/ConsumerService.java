@@ -1,6 +1,6 @@
-package com.shilay.unrealrepo.service;
+package com.shilay.kafkaconsumerservice.service;
 
-import com.shilay.unrealrepo.repository.EmployeeRepository;
+import com.shilay.kafkaconsumerservice.repository.EmployeeRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.kafka.annotation.KafkaListener;

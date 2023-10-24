@@ -1,4 +1,4 @@
-package com.shilay.unrealrepo.model;
+package com.shilay.kafkaconsumerservice.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

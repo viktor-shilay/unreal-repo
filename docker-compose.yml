@@ -62,10 +62,10 @@ services:
     environment:
       KAFKA_BROKERCONNECT: kafka:29092
 
-  unreal-repo-service:
-    image: unreal-repo-service:latest
-    container_name: unreal-repo-app
-    build: .
+  kafka-consumer-service:
+    image: kafka-consumer-service:latest
+    container_name: kafka-consumer-service
+    build: kafka-consumer-service
     environment:
       DATASOURCE_URL: jdbc:postgresql://unreal-postgres:5432/unreal_db
       KAFKA_PORT: kafka:9092
@@ -75,7 +75,7 @@ services:
   terraform-service:
     image: terraform-service:latest
     container_name: terraform-service
-    build: ./terraform
+    build: terraform
     depends_on:
       kafka-connector-service:
         condition: service_healthy
