@@ -1,1 +1,3 @@
 rootProject.name = 'unreal-repo'
+
+include 'kafka-consumer-service'
