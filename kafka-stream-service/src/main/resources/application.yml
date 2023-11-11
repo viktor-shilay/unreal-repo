@@ -1,0 +1,17 @@
+application:
+  employeesTopicName: kafka-stream-topic.department.employees
+  carsTopicName: kafka-stream-topic.department.cars
+  kafkaBrokerAddress: localhost:9092
+
+spring.cloud.stream:
+  kafka:
+    binder:
+      brokers: ${application.kafkaBrokerAddress}
+  bindings:
+    process-in-0:
+      destination: ${application.employeesTopicName}
+    process-in-1:
+      destination: ${application.carsTopicName}
+spring:
+  application:
+    name: kafka-stream-service

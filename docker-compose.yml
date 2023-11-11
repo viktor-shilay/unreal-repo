@@ -17,7 +17,7 @@ services:
     environment:
       ZOOKEEPER_CONNECT: zookeeper:2181
       KAFKA_LISTENERS: "LISTENER_INT://kafka:29092, LISTENER_EXT://0.0.0.0:9092"
-      KAFKA_ADVERTISED_LISTENERS: "LISTENER_INT://kafka:29092, LISTENER_EXT://host.docker.internal:9092"
+      KAFKA_ADVERTISED_LISTENERS: "LISTENER_INT://kafka:29092, LISTENER_EXT://localhost:9092"
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: "LISTENER_INT:PLAINTEXT, LISTENER_EXT:PLAINTEXT"
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INT
 
@@ -34,7 +34,8 @@ services:
 
   kafka-connector-service:
     container_name: kafka-connector
-    image: quay.io/debezium/connect:2.3
+    image: kafka-connector:latest
+    build: debezium-with-postgres
     ports:
       - ${KAFKA_CONNECTOR_PORT}:8083
     environment:
@@ -62,15 +63,15 @@ services:
     environment:
       KAFKA_BROKERCONNECT: kafka:29092
 
-  kafka-consumer-service:
-    image: kafka-consumer-service:latest
-    container_name: kafka-consumer-service
-    build: kafka-consumer-service
-    environment:
-      DATASOURCE_URL: jdbc:postgresql://unreal-postgres:5432/unreal_db
-      KAFKA_PORT: kafka:9092
-    depends_on:
-      - postgres-database
+#  kafka-consumer-service:
+#    image: kafka-consumer-service:latest
+#    container_name: kafka-consumer-service
+#    build: kafka-consumer-service
+#    environment:
+#      DATASOURCE_URL: jdbc:postgresql://unreal-postgres:5432/unreal_db
+#      KAFKA_PORT: kafka:9092
+#    depends_on:
+#      - postgres-database
 
   terraform-service:
     image: terraform-service:latest
