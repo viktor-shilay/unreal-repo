@@ -1,19 +1,19 @@
 package com.shilay.kafkastreamservice.dto;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.PropertyNamingStrategies;
+import com.fasterxml.jackson.databind.annotation.JsonNaming;
 import lombok.Data;
 
 import java.time.LocalDate;
 
 @Data
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy.class)
 public class Employee {
 
     private Long id;
     private String username;
     private String firstname;
     private String lastname;
-
-    @JsonProperty("birth_date")
     private LocalDate birthDate;
     private Role role;
 

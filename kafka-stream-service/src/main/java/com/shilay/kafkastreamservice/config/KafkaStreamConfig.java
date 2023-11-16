@@ -24,17 +24,18 @@ public class KafkaStreamConfig {
                 .join(
                         employees,
                         car -> car.getEmployeeId().toString(),
-                        CarAndEmployee::new
+                        CarAndEmployee::new,
+                        Materialized.with(Serdes.String(), new JsonSerde<>(CarAndEmployee.class))
                 )
                 .groupBy((key, value) -> KeyValue.pair(
-                                value.getEmployee().getId().toString(), value)
-//                        Grouped.with(Serdes.String(), new JsonSerde<>(CarAndEmployee.class))
+                                value.getEmployee().getId().toString(), value),
+                        Grouped.with(Serdes.String(), new JsonSerde<>(CarAndEmployee.class))
                 )
                 .aggregate(
                         EmployeeWithCars::new,
                         (employeeId, carAndEmployee, employeeWithCars) -> employeeWithCars.addCar(carAndEmployee),
-                        (employeeId, carAndEmployee, employeeWithCars) -> employeeWithCars.removeCar(carAndEmployee)
-//                        Materialized.with(Serdes.String(), new JsonSerde<>(EmployeeWithCars.class))
+                        (employeeId, carAndEmployee, employeeWithCars) -> employeeWithCars.removeCar(carAndEmployee),
+                        Materialized.with(Serdes.String(), new JsonSerde<>(EmployeeWithCars.class))
                 )
                 .toStream()
                 .foreach((key, value) -> System.out.println("***RESULT*** KEY: " + key + " VALUE: " + value));
