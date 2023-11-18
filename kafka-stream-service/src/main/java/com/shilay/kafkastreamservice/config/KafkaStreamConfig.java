@@ -1,9 +1,9 @@
 package com.shilay.kafkastreamservice.config;
 
 import com.shilay.kafkastreamservice.dto.Car;
-import com.shilay.kafkastreamservice.dto.CarAndEmployee;
 import com.shilay.kafkastreamservice.dto.Employee;
-import com.shilay.kafkastreamservice.dto.EmployeeWithCars;
+import com.shilay.kafkastreamservice.service.MessageSender;
+import lombok.RequiredArgsConstructor;
 import org.apache.kafka.common.serialization.Serdes;
 import org.apache.kafka.streams.KeyValue;
 import org.apache.kafka.streams.kstream.Grouped;
@@ -15,8 +15,11 @@ import org.springframework.kafka.support.serializer.JsonSerde;
 
 import java.util.function.BiConsumer;
 
+@RequiredArgsConstructor
 @Configuration
 public class KafkaStreamConfig {
+
+    private final MessageSender messageSender;
 
     @Bean
     public BiConsumer<KTable<String, Employee>, KTable<String, Car>> process() {
@@ -24,20 +27,20 @@ public class KafkaStreamConfig {
                 .join(
                         employees,
                         car -> car.getEmployeeId().toString(),
-                        CarAndEmployee::new,
-                        Materialized.with(Serdes.String(), new JsonSerde<>(CarAndEmployee.class))
+                        Employee::new,
+                        Materialized.with(Serdes.String(), new JsonSerde<>(Employee.class))
                 )
                 .groupBy((key, value) -> KeyValue.pair(
-                                value.getEmployee().getId().toString(), value),
-                        Grouped.with(Serdes.String(), new JsonSerde<>(CarAndEmployee.class))
+                                value.getId().toString(), value),
+                        Grouped.with(Serdes.String(), new JsonSerde<>(Employee.class))
                 )
                 .aggregate(
-                        EmployeeWithCars::new,
-                        (employeeId, carAndEmployee, employeeWithCars) -> employeeWithCars.addCar(carAndEmployee),
-                        (employeeId, carAndEmployee, employeeWithCars) -> employeeWithCars.removeCar(carAndEmployee),
-                        Materialized.with(Serdes.String(), new JsonSerde<>(EmployeeWithCars.class))
+                        Employee::new,
+                        (employeeId, employee, employeeAgg) -> employeeAgg.addCar(employee),
+                        (employeeId, employee, employeeAgg) -> employeeAgg.removeCar(employee),
+                        Materialized.with(Serdes.String(), new JsonSerde<>(Employee.class))
                 )
                 .toStream()
-                .foreach((key, value) -> System.out.println("***RESULT*** KEY: " + key + " VALUE: " + value));
+                .foreach((key, value) -> messageSender.sendEmployee(value));
     }
 }

@@ -2,3 +2,4 @@ rootProject.name = 'unreal-repo'
 
 include 'kafka-consumer-service'
 include 'kafka-stream-service'
+include 'elastic-search-service'
