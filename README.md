@@ -5,7 +5,7 @@
 2. Send events into kafka-topic when `employees` table changes.
 3. Initialize debezium-connector using terraform.
 4. Create `kafka-consumer-service` that reads events from employees-topic and logs them to the console. (Read only kafka-key, not the whole message).
-5. Create `cars` table in addition to `employees` table. (employee:cars - 1:n). These two tables send events to the relevant kafka-topics. Create `kafka-stream-service` that reads these two topics, join them and save aggregated message to the Elastic Search index. 
+5. Create `cars` table in addition to `employees` table. (employee:cars - 1:n). When records are inserted into these two tables, messages are sent automatically to the relevant kafka-topics. Create `kafka-stream-service` that reads these two topics, join them and save aggregated message to the Elastic Search index. 
 6. Create `elastic-search-service` that has endpoint to get all employees.
 
 ## How to run
