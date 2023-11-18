@@ -1,10 +1,12 @@
 # unreal-repo
 
-## Features
-1. Send events into kafka when `employee` table changes.
-2. Logging kafka events into `kafka-consumer-service`.
-3. Join two tables (employee:cars - 1:n) using kafka-streams and save into Elastic Search
-4. Get all employees from Elastic Search.
+## Technical requirements
+1. Create docker compose with postgres container. When postgres container starts, a script is executed to create the department schema and the `employees` table. Insert some records into `employees` table.
+2. Send events into kafka-topic when `employees` table changes.
+3. Initialize debezium-connector using terraform.
+4. Create `kafka-consumer-service` that reads events from employees-topic and logs them to the console. (Read only kafka-key, not the whole message).
+5. Create `cars` table in addition to `employees` table. (employee:cars - 1:n). These two tables send events to the relevant kafka-topics. Create `kafka-stream-service` that reads these two topics, join them and save aggregated message to the Elastic Search index. 
+6. Create `elastic-search-service` that has endpoint to get all employees.
 
 ## How to run
 Make sure that you have [Docker](https://www.docker.com/) installed and running on your machine.
