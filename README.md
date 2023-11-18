@@ -23,7 +23,7 @@ Make sure that you have [Docker](https://www.docker.com/) installed and running 
    INSERT INTO department.cars
    VALUES (11, 'BMW', '5 Series (G30/G31) 530i', '2017', 'Petrol', 'Silver', 39000.0, 6);
    ``` 
-4. Wait a little while kafka-streams-service finishes processing messages from kafka-topics (it takes about a minute).
+4. Wait a little while `kafka-streams-service` finishes processing messages from kafka-topics (it takes about a minute).
 
 5. To get all employees from ES send HTTP request to
 
@@ -31,26 +31,25 @@ Make sure that you have [Docker](https://www.docker.com/) installed and running 
 
    and you'll see response:
 
-
-      {
-        "id": 6,
-        "username": "v_shilay666",
-        "firstname": "Viktor",
-        "lastname": "Shilay",
-        "birth_date": "1996-01-22",
-        "role": "UNEMPLOYED",
-        "cars": [
-            {
-                "id": 11,
-                "brand": "BMW",
-                "model": "5 Series (G30/G31) 530i",
-                "manufacture_year": "2017",
-                "engine_type": "Petrol",
-                "color": "Silver",
-                "price": 39000.0,
-                "employee_id": 6
-            }
-        ]
-      }
+       {
+            "id": 6,
+            "username": "v_shilay666",
+            "firstname": "Viktor",
+            "lastname": "Shilay",
+            "birth_date": "1996-01-22",
+            "role": "UNEMPLOYED",
+            "cars": [
+                {
+                    "id": 11,
+                    "brand": "BMW",
+                    "model": "5 Series (G30/G31) 530i",
+                    "manufacture_year": "2017",
+                    "engine_type": "Petrol",
+                    "color": "Silver",
+                    "price": 39000.0,
+                    "employee_id": 6
+                }
+           ]
+       }
 
 
