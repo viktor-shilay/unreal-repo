@@ -34,7 +34,8 @@ services:
 
   kafka-connector-service:
     container_name: kafka-connector
-    image: quay.io/debezium/connect:2.3
+    image: kafka-connector:latest
+    build: debezium-with-postgres
     ports:
       - ${KAFKA_CONNECTOR_PORT}:8083
     environment:
@@ -62,15 +63,35 @@ services:
     environment:
       KAFKA_BROKERCONNECT: kafka:29092
 
-  kafka-consumer-service:
-    image: kafka-consumer-service:latest
-    container_name: kafka-consumer-service
-    build: kafka-consumer-service
+  elastic-search:
+    container_name: elastic-search
+    image: elasticsearch:${STACK_VERSION}
+    ports:
+      - ${ELASTIC_PORT}:9200
+    restart: always
     environment:
-      DATASOURCE_URL: jdbc:postgresql://unreal-postgres:5432/unreal_db
-      KAFKA_PORT: kafka:9092
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    healthcheck:
+      test: [ "CMD", "curl", "-I", "http://elastic-search:9200" ]
+      interval: 10s
+      timeout: 5s
+      retries: 15
+
+  kibana:
+    container_name: kibana
+    image: kibana:${STACK_VERSION}
+    ports:
+      - ${KIBANA_PORT}:5601
+    restart: always
+    environment:
+      - ELASTICSEARCH_HOSTS=http://elastic-search:9200
     depends_on:
-      - postgres-database
+      - elastic-search
 
   terraform-service:
     image: terraform-service:latest
@@ -78,5 +99,37 @@ services:
     build: terraform
     depends_on:
       kafka-connector-service:
+        condition: service_healthy
+
+  kafka-consumer-service:
+    image: kafka-consumer-service:latest
+    container_name: kafka-consumer-service
+    build: kafka-consumer-service
+    environment:
+      DATASOURCE_URL: jdbc:postgresql://unreal-postgres:5432/unreal_db
+      KAFKA_URL: kafka:9092
+    depends_on:
+      - postgres-database
+
+  kafka-stream-service:
+    image: kafka-stream-service:latest
+    container_name: kafka-stream-service
+    build: kafka-stream-service
+    environment:
+      ELASTIC_SEARCH_SERVICE_URL: http://elastic-search-service:8081
+      KAFKA_URL: kafka:9092
+    depends_on:
+      - kafka-service
+
+  elastic-search-service:
+    image: elastic-search-service:latest
+    container_name: elastic-search-service
+    build: elastic-search-service
+    ports:
+      - ${ELASTIC_SEARCH_SERVICE_PORT}:8081
+    environment:
+      ELASTIC_URL: elastic-search:9200
+    depends_on:
+      elastic-search:
         condition: service_healthy
 

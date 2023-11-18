@@ -1,0 +1,18 @@
+application:
+  employeesTopicName: kafka-stream-topic.department.employees
+  carsTopicName: kafka-stream-topic.department.cars
+
+spring.cloud.stream:
+  kafka:
+    binder:
+      brokers: ${KAFKA_URL}
+  bindings:
+    process-in-0:
+      destination: ${application.employeesTopicName}
+    process-in-1:
+      destination: ${application.carsTopicName}
+spring:
+  application:
+    name: kafka-stream-service
+
+elastic-search-service-URL: ${ELASTIC_SEARCH_SERVICE_URL}
